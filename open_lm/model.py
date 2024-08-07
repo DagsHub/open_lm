@@ -316,12 +316,12 @@ class Block(nn.Module):
             use_cache=use_cache,
             attention_mask=attention_mask,
         )
-        h = x + h
+        h = x.to(h.device) + h
         if self._ffn_type == "moe":
             ffn_out, _ = self.feed_forward(self.ffn_norm(h))
         else:
             ffn_out = self.feed_forward(self.ffn_norm(h))
-        out = h + ffn_out
+        out = h.to(ffn_out.device) + ffn_out
         return out, past_key_value
 
 
@@ -402,6 +402,7 @@ class Transformer(nn.Module, PyTorchModelHubMixin):
             past_key_values = [None] * self.n_layers
         elif isinstance(past_key_values, tuple):
             past_key_values = list(past_key_values)
+
         for i, layer in enumerate(self.layers):
             if self.grad_checkpointing:
                 x, past_key_values[i] = checkpoint(layer, x, past_key_values[i], use_cache, attention_mask)

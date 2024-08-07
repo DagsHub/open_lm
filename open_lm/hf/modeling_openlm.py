@@ -47,6 +47,7 @@ class OpenLMForCausalLM(PreTrainedModel):
 
     config_class = OpenLMConfig
     base_model_prefix = "model"
+    _no_split_modules = []
 
     def __init__(self, config: OpenLMConfig, model: Optional[Transformer] = None):
         super().__init__(config)

@@ -23,7 +23,7 @@ def apply_rotary_pos_emb(x, cos, sin, offset: int = 0):
     cos_out = cos[:, offset : offset + x.shape[1], :, :]
     sin_out = sin[:, offset : offset + x.shape[1], :, :]
 
-    return (x * cos_out) + (rotate_half(x) * sin_out)
+    return (x * cos_out) + (rotate_half(x).to(cos_out.device) * sin_out.to(cos_out.device))
 
 
 class RotaryEmbedding(torch.nn.Module):

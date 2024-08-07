@@ -53,7 +53,7 @@ def apply_attention_mask_(bias, attention_mask, queries_dtype):
     mask_length = attention_mask.shape[-1]
     # Set parts of bias that are zero (i.e., where attention is allowed) _and_ attention_mask is False (i.e.,
     # where we should not attend) with min_dtype.
-    padding_mask = bias[..., :mask_length].eq(0.0) * attention_mask[:, None, None, :].eq(0.0)
+    padding_mask = bias[..., :mask_length].eq(0.0) * attention_mask[:, None, None, :].eq(0.0).to(bias.device)
     min_dtype = torch.finfo(queries_dtype).min
     bias[..., :mask_length] = bias[..., :mask_length].masked_fill(padding_mask, min_dtype)
     # Disable masking for sequence indices where all attention weights are -inf
